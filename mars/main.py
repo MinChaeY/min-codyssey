@@ -15,12 +15,10 @@ def read_log_file(file_path):
 def print_log_to_screen(log_entries):
     # 로그 항목을 화면에 출력
     if log_entries:
-        print('| 타임스탬프 | 이벤트 | 메시지 |')
-        print('|-----------|--------|---------|')
         for log in log_entries:
             print(f"| {log['timestamp']} | {log['event']} | {log['message']} |")
     else:
-        print("로그 파일이 비어 있거나 읽을 수 없습니다.")
+        print('로그 파일이 비어 있거나 읽을 수 없습니다.')
 
 def analyze_logs(log_entries):
     accident_logs = []
@@ -58,7 +56,7 @@ def create_report(accident_logs, accident_cause, output_file):
         if accident_cause:
             file.write(f'사고의 원인은 다음과 같을 가능성이 있습니다: **{accident_cause}**.\n')
         else:
-            file.write("로그에서 사고의 명확한 원인을 찾을 수 없었습니다.\n")
+            file.write('로그에서 사고의 명확한 원인을 찾을 수 없었습니다.\n')
 
         file.write('\n## 결론\n')
         file.write('임무는 성공적으로 완료되었지만, 산소 탱크의 폭발로 센터와 임무 통제 시스템의 전원이 꺼졌습니다.\n')

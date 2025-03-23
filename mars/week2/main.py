@@ -1,16 +1,20 @@
 import os
 import csv
 
+#로그파일을 읽어오는 함수.
 def read_log_file(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
+            #각 행을 딕셔너리 형식으로 읽어들임
             reader = csv.DictReader(file)
             log_content = [row for row in reader]
         return log_content
+    # 파일이 존재하지 않을 경우 예외처리
     except FileNotFoundError as e:
         print(f'파일을 읽는 중 에러가 발생했습니다: {e}')
+        # 빈 리스트를 반환
     return []
-
+#파일을 닫는 close 필요, 다만 with open를 쓰면 자동으로 close를 해주긴 함. with만 쓰는 경우에는 close가 필요
 
 def print_log_to_screen(log_entries):
     # 로그 항목을 화면에 출력
@@ -23,7 +27,7 @@ def print_log_to_screen(log_entries):
 def analyze_logs(log_entries):
     accident_logs = []
     accident_cause = ''
-
+# 이건 사고의 원인이 된 요소를 선택해 출력한것, 특정 시간대 이후의 로그를 출력하는 방법도 있음.
     for entry in log_entries:
         # 로그 항목이 'Oxygen tank'를 포함하는지 확인
         if 'Oxygen tank' in entry['message']:
@@ -36,6 +40,9 @@ def analyze_logs(log_entries):
     return accident_logs, accident_cause
 
 # Markdown 보고서 작성 함수
+#다른 로그파일을 받을 경우나 코드를 돌릴 경우에는 정적이기 때문에 다른 로그파일에는 대응이 어렵다. 
+#재사용에는 어려움이 따른다는 점이 아쉽다.
+#나중에 수정이 필요함. 동적으로 하려면 어떻게 해야할까? 
 def create_report(accident_logs, accident_cause, output_file):
     with open(output_file, mode='w', encoding='utf-8') as file:
         file.write('# 로그 분석 보고서\n\n')
@@ -78,7 +85,7 @@ def main():
     # 1. 로그 파일 읽기
     log_entries = read_log_file(log_file)
 
-     # 2. 화면에 로그 출력
+    # 2. 화면에 로그 출력
     print_log_to_screen(log_entries)
 
     if not log_entries:

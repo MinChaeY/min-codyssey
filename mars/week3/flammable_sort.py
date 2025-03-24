@@ -10,10 +10,10 @@ def read_csv_to_list(filename):
                 if len(parts) != 5:  # 열 개수 불일치
                     print(f"Warning: Line has an incorrect number of columns: {line}")
                     continue  # 비정상적인 데이터는 건너뜀
-                try:
-                    parts[4] = float(parts[4])  # 인화성 변환
+                try: # 인화성 변환, csv 파일에서 읽어온 값은 기본적으로 문자열 취급, 그래서 실수로 취급하기 위해서 float를 사용
+                    parts[4] = float(parts[4])  
                 except ValueError:
-                    parts[4] = 0.0  # 인화성 값이 없을 경우 기본값
+                    parts[4] = 0.0  # 인화성 값이 0 이여서 없을 경우 실수 0.0을 대입하도록 함
                 inventory_list.append(parts)
         return inventory_list
     except (FileNotFoundError, PermissionError, OSError, UnicodeDecodeError) as e:
@@ -24,7 +24,7 @@ def read_csv_to_list(filename):
         return []
 
 def sort_by_flammability(inventory_list):
-    try:
+    try: # 
         return sorted(inventory_list, key=lambda x: x[4], reverse=True)
     except (IndexError, TypeError) as e:
         print(f"Data error when sorting by flammability: {e}")
@@ -43,9 +43,10 @@ def write_csv(filename, inventory_list):
             file.write('Substance,Weight (g),Specific Gravity,Strength,Flammability\n')
             for item in inventory_list:
                 file.write(','.join(map(str, item)) + '\n')
-    except OSError as e:
+    except OSError as e: 
         print(f"File error when writing CSV: {e}")
 
+# elem 은 리스트 안에 있는 요소들.
 def write_binary(filename, inventory_list):
     try:
         with open(filename, 'wb') as file:
@@ -54,12 +55,12 @@ def write_binary(filename, inventory_list):
                     try:
                         if isinstance(elem, str):
                             elem = elem.encode()  # 문자열을 바이트로 변환
-                        file.write(bytes(str(elem), 'utf-8'))
+                        file.write(bytes(str(elem), 'utf-8')) # 문자열을 byte로 변환하여 파일에 작성
                     except UnicodeEncodeError as ue:
                         print(f"Encoding error occurred: {ue}")
     except OSError as e:
         print(f"File error when writing binary: {e}")
-
+# bin 파일 읽는 함수
 def read_binary(filename):
     try:
         with open(filename, 'rb') as file:

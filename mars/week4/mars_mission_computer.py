@@ -50,7 +50,8 @@ ds = DummySensor()
 # 실행자가 현재 시간을 입력받음 (예: 202503311236 형식)
 current_time_input = input("현재 시간을 YYYYMMDDHHMM 포맷으로 입력하시오: ")
 if not (len(current_time_input) == 12 and current_time_input.isdigit()):
-    print("❌ 잘못된 형식입니다. YYYYMMDDHHMM 형식으로 입력하세요.")
+    print("❌ 잘못된 형식입니다. YYYYMMDDHHMM 형식으로 입력하세요.") # 만약에 로그파일이 실행해서 계속 돌면?
+
     exit()
 
 # set_env()와 get_env() 호출하여 값 확인하고 로그 남기기

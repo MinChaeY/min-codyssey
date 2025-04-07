@@ -16,3 +16,12 @@ mars_base_external_illuminance: 668.13 W/m©÷
 mars_base_internal_co2: 0.0696 %
 mars_base_internal_oxygen: 5.18 %
 ========================================
+
+[2025-04-06 21:55]
+mars_base_internal_temperature: 26.83 ¡ÆC
+mars_base_external_temperature: 18.09 ¡ÆC
+mars_base_internal_humidity: 52.63 %
+mars_base_external_illuminance: 590.74 W/m©÷
+mars_base_internal_co2: 0.0518 %
+mars_base_internal_oxygen: 6.92 %
+========================================

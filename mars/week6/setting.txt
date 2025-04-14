@@ -1,0 +1,5 @@
+operating_system
+cpu_type
+memory_size
+cpu_cores
+memory_size

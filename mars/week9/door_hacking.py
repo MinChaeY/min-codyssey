@@ -1,9 +1,7 @@
-# door_hacking.py
 import zipfile
 import string
 import time
 import multiprocessing
-import os  # 강제 종료용
 
 # 문자 조합 설정
 CHARSET = string.ascii_lowercase + string.digits
@@ -27,28 +25,25 @@ def try_passwords(start_prefix):
                     for c3 in CHARSET:
                         for c4 in CHARSET:
                             for c5 in CHARSET:
+                                if FOUND.value:
+                                    return
                                 password = start_prefix + c1 + c2 + c3 + c4 + c5
                                 with COUNTER.get_lock():
                                     COUNTER.value += 1
-                                if FOUND.value:
-                                    return
                                 try:
                                     with zf.open(TARGET_FILE, pwd=password.encode()) as f:
                                         content = f.read().decode('utf-8', errors='replace')
 
-                                        # 비밀번호 저장 (문제 조건 충족)
                                         with open(PASSWORD_OUTPUT, 'w') as pwfile:
                                             pwfile.write(password + '\n')
-                                        #  압축 해제된 파일 내용 저장
                                         with open(CONTENT_OUTPUT, 'w') as outfile:
-                                            outfile.write(content)
+                                            outfile.write(contenot)
 
                                         with FOUND.get_lock():
                                             FOUND.value = True
 
                                         print(f'[✓] 비밀번호 찾음: {password}')
-                                        # 프로그램 전체 강제 종료
-                                        os._exit(0)  # 즉시 전체 종료
+                                        return  # 성공하면 리턴해서 루프 종료
                                 except:
                                     continue
     except Exception as e:
@@ -65,28 +60,17 @@ def unlock_zip():
         processes.append(p)
 
     try:
-        while True:
-            if FOUND.value:
-                print(' 비밀번호 찾음 → 프로세스 종료 중...')
-                for p in processes:
-                    if p.is_alive():
-                        p.terminate()
-                        p.join(timeout=2)  # 안정적 종료 대기
-                break
-
-            if all(not p.is_alive() for p in processes):
-                break
-
-            time.sleep(0.2)
+        for p in processes:
+            p.join()  # 모든 프로세스가 종료될 때까지 대기
 
     except KeyboardInterrupt:
-        print('\n 사용자 중단 → 모든 프로세스 강제 종료')
+        print('\n[!] 사용자 중단 → 모든 프로세스 강제 종료')
         for p in processes:
             if p.is_alive():
                 p.terminate()
 
     elapsed = time.time() - start
-    print(f'총 시도 횟수: {COUNTER.value:,}')
+    print(f'\n총 시도 횟수: {COUNTER.value:,}')
     print(f'총 소요 시간: {elapsed:.2f}초')
 
 if __name__ == '__main__':

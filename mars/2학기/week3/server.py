@@ -1,5 +1,6 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime
+import threading
 
 
 class PirateHandler(BaseHTTPRequestHandler):
@@ -45,11 +46,25 @@ class PirateHandler(BaseHTTPRequestHandler):
 
 def run_server():
     """8080 포트에서 서버 실행"""
-    port = 8080 
+    port = 8080
     server_address = ('', port)
     httpd = HTTPServer(server_address, PirateHandler)
     print(f'HTTP 서버가 {port}번 포트에서 시작되었습니다...')
-    httpd.serve_forever()
+    
+    # 서버를 별도의 스레드에서 실행 (메인 스레드는 관리자 입력 대기)
+    server_thread = threading.Thread(target=httpd.serve_forever) # 무한루프로 서버를 돌림 -> 요청을 영원히 대기함
+    server_thread.start()
+
+    # 관리자 입력 대기
+    while True:
+        cmd = input("명령어 입력 (q 입력 시 서버 종료): ").strip().lower() #명령어 입력 대기를 위한 메인 스레드
+        if cmd == 'q': # q가 입력될 경우 메인스레드 실행
+            print("서버 종료 중...")
+            httpd.shutdown() #shutdown 호출 -> serve_forever() 루프가 멈춤
+            httpd.server_close() #네트워크 소켓(현재는 8080포트) 닫힘.
+            server_thread.join() # 서버 스레드 종료. join으로 정리 -> 서버 스레드가 정리될때까지 메인 스레드 종료 방지
+            print("HTTP 서버가 정상 종료되었습니다.")
+            break
 
 
 if __name__ == '__main__':

@@ -87,7 +87,7 @@ class NaverCrawler:
 
 def main():
     """메인 실행 함수"""
-
+    # 아이디 비번 하드코딩
     user_id = "네이버ID"
     user_pw = "비밀번호"
 
